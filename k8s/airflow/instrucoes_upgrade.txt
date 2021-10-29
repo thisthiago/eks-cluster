@@ -1,0 +1,13 @@
+export REDIS_PASSWORD=$(kubectl get secret --namespace "airflow" airflow-bmg-redis -o jsonpath="{.data.redis-password}" | base64 --decode)
+
+export AIRFLOW_HOST=$(kubectl get svc --namespace airflow airflow-bmg --template "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}")
+ 
+declare -i AIRFLOW_PORT=8080
+ 
+export AIRFLOW_PASSWORD=$(kubectl get secret --namespace "airflow" airflow-bmg -o jsonpath="{.data.airflow-password}" | base64 --decode)
+ 
+export AIRFLOW_FERNETKEY=$(kubectl get secret --namespace "airflow" airflow-bmg -o jsonpath="{.data.airflow-fernetKey}" | base64 --decode)
+ 
+export POSTGRESQL_PASSWORD=$(kubectl get secret --namespace "airflow" airflow-bmg-externaldb -o jsonpath="{.data.postgresql-password}" | base64 --decode)
+ 
+helm upgrade --namespace airflow airflow-bmg bitnami/airflow -f custom_values_bitnami_bmg.yaml --set service.type=LoadBalancer --set web.baseUrl=http://${AIRFLOW_HOST}:${AIRFLOW_PORT} --set auth.password=${AIRFLOW_PASSWORD} --set auth.fernetKey=${AIRFLOW_FERNETKEY} --set postgresql.postgresqlPassword=${POSTGRESQL_PASSWORD} --set redis.auth.password=${REDIS_PASSWORD} --atomic --timeout 500s

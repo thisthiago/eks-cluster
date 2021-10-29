@@ -1,0 +1,7 @@
+apache-airflow-providers-microsoft-azure==2.0.0
+Fiona==1.8.18
+geopandas==0.8.2
+geoparquet==0.0.3
+pyarrow==3.0.0
+requests==2.25.1
+addict==2.4.0

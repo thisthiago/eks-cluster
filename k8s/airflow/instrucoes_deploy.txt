@@ -1,0 +1,65 @@
+az acr login -n  acrcyreladataanalytics #login na azure
+az acr list --resource-group rg-dataanalytics --output table #lista resource groups na azure
+kubectl describe pod -n airflow #mostra logs dos pods no workspace airflow
+kubectl get pods -n airflow #lista pods no workspace airflow
+
+#criar pods
+kubectl create deployment <NAME> --image=image [--dry-run] [options]
+
+get-alias -Name k
+Set-Alias -Name k -Value kubectl
+
+kubectl get namespace #lista namespaces do cluster k8s
+
+kubectl create namespace <airflow> (pode ser qualquer uma) #cria um novo namespace
+
+-- HELM - AKS - Kubernetes
+
+kubectl create -n airflow configmap requirements --from-file=requirements.txt #configmap para colocar um arquivo dentro dos pods
+
+helm install -n airflow airflow-bmg bitnami/airflow -f custom_values_bitnami_bmg.yaml --debug --timeout 10m0s 
+
+***vá para o kubehelm commands*****
+
+
+
+------------ordem comandos create e debug pods------------------------------------------------------
+
+#retorna quantos nós tem nosso cluster
+>>> kubectl get nodes
+
+#### retorna quantidade de pods nas maquinas
+>>> kubectl get pods 
+
+#### retorna a quantidade de serviços que estão rodando
+>>> kubectl get services
+
+#### comando para criar pods no Kubernetes (tem um muito melhor)
+>>>kubectl create deployment <NAME> --image=image [--dry-run] [options] ou kubectl create -f FILENAME [options]
+
+#### retorna quais recursos estão para ser criados
+>>> kubectl get deployment 
+
+#### retorna os logs do pod
+>>>  kubectl logs [pod Name]
+
+#### retorna o status do pod 
+>>> kubectl describe pod [pod name]
+
+#### entro no pod para trabalhar com ele
+>>> kubectl -n <namespace> exec --stdin --tty <podname> -- /bin/bash
+
+#### criar e atualizar com base em um .yaml 
+>>> kubectl apply -f [FILENAME.yaml]
+
+https://kubernetes.io/pt-br/docs/reference/kubectl/cheatsheet/
+
+
+###Debugar
+
+kubectl -n airflow get events --sort-by='{lastTimestamp}'
+
+
+###expor a porta do webserver airflow
+
+kubectl port-forward --namespace airflow <pod-name> 8080:8080
